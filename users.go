@@ -7,8 +7,8 @@ import (
 
 type user struct {
 	id    string
-	email string
-	name  string
+	Email string
+	Name  string
 }
 
 func printUsers() {
@@ -23,11 +23,11 @@ func printUsers() {
 	for rows.Next() {
 		var u user
 
-		if err := rows.Scan(&u.id, &u.email, &u.name); err != nil {
+		if err := rows.Scan(&u.id, &u.Email, &u.Name); err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("[%s] %s: %s\n", u.id, u.name, u.email)
+		fmt.Printf("[%s] %s: %s\n", u.id, u.Name, u.Email)
 	}
 }
 
@@ -42,7 +42,7 @@ func getUserByEmail(email string) user {
 
 	var u user
 
-	err = stmt.QueryRow(email).Scan(&u.id, &u.email, &u.name)
+	err = stmt.QueryRow(email).Scan(&u.id, &u.Email, &u.Name)
 	if err != nil {
 		log.Fatal(err)
 	}

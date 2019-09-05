@@ -1,16 +1,27 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
+	"log"
+	"net/http"
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
-func main() {
-	// printUsers()
+func renderTemplate(w http.ResponseWriter, tmpl string, u *user) {
+	err := templates.ExecuteTemplate(w, tmpl+".html", u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
 
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	u := getUserByEmail("bdkinna@gmail.com")
+	renderTemplate(w, "index", &u)
+}
 
-	fmt.Printf("[%s] %s: %s", u.id, u.name, u.email)
+func main() {
+	http.HandleFunc("/", indexHandler)
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
