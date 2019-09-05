@@ -3,10 +3,12 @@
 <body>
     {{ template "header" .User }}
     <main>
+        {{ if .Tasks }}
         <ul>
             {{ range .Tasks }}
             <li>{{ .Name }}</li>
             {{ end }}
         </ul>
+        {{ end }}
     </main>
 </body>

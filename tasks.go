@@ -10,7 +10,7 @@ type task struct {
 	IsComplete bool
 }
 
-func getTasks(userID int) []task {
+func getTasks(userID int) ([]task, error) {
 	initDb()
 
 	sql := "SELECT id, name, is_complete FROM tasks WHERE user_id = $1"
@@ -36,5 +36,22 @@ func getTasks(userID int) []task {
 		tasks = append(tasks, t)
 	}
 
-	return tasks
+	return tasks, err
+}
+
+func createTask(u *user, t *task) error {
+	initDb()
+
+	sql := "INSERT INTO tasks (name, user_id) VALUES ($1, $2)"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = stmt.Exec(t.Name, u.id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return err
 }

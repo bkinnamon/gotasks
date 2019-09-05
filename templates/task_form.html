@@ -1,0 +1,13 @@
+{{ template "head" }}
+
+<body>
+    {{ template "header" .User }}
+
+    <main>
+        <h2>New Task</h2>
+        <form action="/tasks/create/" method="POST">
+            <input type="text" name="name" aria-label="Name" />
+            <button type="submit">Add</button>
+        </form>
+    </main>
+</body>
