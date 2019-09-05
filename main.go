@@ -8,8 +8,8 @@ import (
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
-func renderTemplate(w http.ResponseWriter, tmpl string, u *user) {
-	err := templates.ExecuteTemplate(w, tmpl+".html", u)
+func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
+	err := templates.ExecuteTemplate(w, tmpl+".html", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

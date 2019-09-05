@@ -1,6 +1,12 @@
 {{ define "header" }}
 <header>
 	<div class="logo">Bapp</div>
-	<div class="user">Login</div>
+	<div class="user">
+		{{ if .Name }}
+		{{ .Name }}
+		{{ else }}
+		Login
+		{{ end }}
+	</div>
 </header>
 {{ end }}
