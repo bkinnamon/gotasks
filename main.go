@@ -17,11 +17,23 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	u := getUserByEmail("bdkinna@gmail.com")
-	renderTemplate(w, "index", &u)
+	renderTemplate(w, "index", struct {
+		User *user
+	}{&u})
+}
+
+func tasksHandler(w http.ResponseWriter, r *http.Request) {
+	u := getUserByEmail("bdkinna@gmail.com")
+	t := getTasks(u.id)
+	renderTemplate(w, "tasks", struct {
+		User  *user
+		Tasks *[]task
+	}{&u, &t})
 }
 
 func main() {
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/tasks/", tasksHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
