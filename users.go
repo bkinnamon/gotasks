@@ -27,7 +27,7 @@ func printUsers() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("[%s] %s: %s\n", u.id, u.Name, u.Email)
+		fmt.Printf("[%d] %s: %s\n", u.id, u.Name, u.Email)
 	}
 }
 
