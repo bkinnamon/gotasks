@@ -6,7 +6,13 @@
         {{ if .Tasks }}
         <ul>
             {{ range .Tasks }}
-            <li>{{ .Name }}</li>
+            <li data-id="{{ .ID }}">
+                {{ .Name }}
+                [
+                <a href="/tasks/{{ .ID }}/edit/">edit</a>
+                <a href="/tasks/{{ .ID }}/delete/">delete</a>
+                ]
+            </li>
             {{ end }}
         </ul>
         {{ end }}
