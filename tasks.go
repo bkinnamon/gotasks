@@ -74,3 +74,20 @@ func createTask(u *user, t *task) error {
 
 	return err
 }
+
+func updateTask(t *task) error {
+	initDb()
+
+	sql := "UPDATE tasks SET name = $1, is_complete = $2 WHERE id = $3"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = stmt.Exec(t.Name, t.IsComplete, t.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return err
+}
