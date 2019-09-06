@@ -49,7 +49,7 @@ func createTaskHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := r.FormValue("id")
 	if idStr != "" {
 		id, _ := strconv.Atoi(idStr)
-		t = getTaskById(id)
+		t = getTaskByID(id)
 	} else {
 		t = &task{Name: r.FormValue("name")}
 	}

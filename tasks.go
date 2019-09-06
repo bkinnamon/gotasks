@@ -39,7 +39,7 @@ func getTasks(userID int) ([]task, error) {
 	return tasks, err
 }
 
-func getTaskById(id int) *task {
+func getTaskByID(id int) *task {
 	initDb()
 
 	sql := "SELECT id, name, is_complete FROM tasks WHERE id = $1"
