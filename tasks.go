@@ -5,7 +5,7 @@ import (
 )
 
 type task struct {
-	id         int
+	ID         int
 	Name       string
 	IsComplete bool
 }
@@ -28,7 +28,7 @@ func getTasks(userID int) ([]task, error) {
 
 	for rows.Next() {
 		var t task
-		err := rows.Scan(&t.id, &t.Name, &t.IsComplete)
+		err := rows.Scan(&t.ID, &t.Name, &t.IsComplete)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -37,6 +37,25 @@ func getTasks(userID int) ([]task, error) {
 	}
 
 	return tasks, err
+}
+
+func getTaskById(id int) *task {
+	initDb()
+
+	sql := "SELECT id, name, is_complete FROM tasks WHERE id = $1"
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var t task
+
+	err = stmt.QueryRow(id).Scan(&t.ID, &t.Name, &t.IsComplete)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &t
 }
 
 func createTask(u *user, t *task) error {
@@ -48,7 +67,7 @@ func createTask(u *user, t *task) error {
 		log.Fatal(err)
 	}
 
-	_, err = stmt.Exec(t.Name, u.id)
+	_, err = stmt.Exec(t.Name, u.ID)
 	if err != nil {
 		log.Fatal(err)
 	}

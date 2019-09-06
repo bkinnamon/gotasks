@@ -4,10 +4,15 @@
     {{ template "header" .User }}
 
     <main>
+        {{ if eq .Task.Name "" }}
         <h2>New Task</h2>
-        <form action="/tasks/create/" method="POST">
-            <input type="text" name="name" aria-label="Name" />
-            <button type="submit">Add</button>
+        {{ else }}
+        <h2>Edit Task</h2>
+        {{ end }}
+        <form action="/tasks/save/" method="POST">
+            <input type="hidden" name="id" value="{{ .Task.ID }}" />
+            <input type="text" name="name" aria-label="Name" value="{{ .Task.Name }}" />
+            <button type="submit">Save</button>
         </form>
     </main>
 </body>

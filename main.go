@@ -4,11 +4,18 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
-func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
+type templateData struct {
+	User  *user
+	Task  *task
+	Tasks *[]task
+}
+
+func renderTemplate(w http.ResponseWriter, tmpl string, data *templateData) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -17,38 +24,40 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	u := getUserByEmail("bdkinna@gmail.com")
-	renderTemplate(w, "index", struct {
-		User *user
-	}{&u})
+	renderTemplate(w, "index", &templateData{User: &u})
 }
 
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	u := getUserByEmail("bdkinna@gmail.com")
-	t, err := getTasks(u.id)
+	t, err := getTasks(u.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	renderTemplate(w, "tasks", struct {
-		User  *user
-		Tasks *[]task
-	}{&u, &t})
+	renderTemplate(w, "tasks", &templateData{User: &u, Tasks: &t})
 }
 
 func taskFormHandler(w http.ResponseWriter, r *http.Request) {
 	u := getUserByEmail("bdkinna@gmail.com")
-	renderTemplate(w, "task_form", struct {
-		User *user
-	}{&u})
+	t := &task{Name: ""}
+	renderTemplate(w, "task_form", &templateData{User: &u, Task: t})
 }
 
 func createTaskHandler(w http.ResponseWriter, r *http.Request) {
 	u := getUserByEmail("bdkinna@gmail.com")
-	t := task{Name: r.FormValue("name")}
+	var t *task
+	idStr := r.FormValue("id")
+	if idStr != "" {
+		id, _ := strconv.Atoi(idStr)
+		t = getTaskById(id)
+	} else {
+		t = &task{Name: r.FormValue("name")}
+	}
 
-	err := createTask(&u, &t)
+	err := createTask(&u, t)
 	if err != nil {
 		log.Fatal(err)
+		http.Redirect(w, r, "/tasks/new/", http.StatusFound)
 	}
 
 	http.Redirect(w, r, "/tasks/", http.StatusFound)
